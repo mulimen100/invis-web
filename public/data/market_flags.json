@@ -1,0 +1,156 @@
+{
+  "updated": "2026-01-12T13:06:31.892896",
+  "count": 30,
+  "flags": [
+    {
+      "date": "2025-11-26",
+      "return": 0.0069,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-11-28",
+      "return": 0.0055,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-01",
+      "return": -0.0046,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-02",
+      "return": 0.0019,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-03",
+      "return": 0.0035,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-04",
+      "return": 0.0007,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-05",
+      "return": 0.0019,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-08",
+      "return": -0.003,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-09",
+      "return": -0.0009,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-10",
+      "return": 0.0066,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-11",
+      "return": 0.0023,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-12",
+      "return": -0.0108,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-15",
+      "return": -0.0015,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-16",
+      "return": -0.0027,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-17",
+      "return": -0.011,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-18",
+      "return": 0.0076,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-19",
+      "return": 0.0091,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-22",
+      "return": 0.0062,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-23",
+      "return": 0.0046,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-24",
+      "return": 0.0035,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2025-12-26",
+      "return": -0.0001,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-29",
+      "return": -0.0036,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-30",
+      "return": -0.0012,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2025-12-31",
+      "return": -0.0074,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2026-01-02",
+      "return": 0.0018,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2026-01-05",
+      "return": 0.0067,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2026-01-06",
+      "return": 0.0059,
+      "flag": "GREEN"
+    },
+    {
+      "date": "2026-01-07",
+      "return": -0.0032,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2026-01-08",
+      "return": -0.0001,
+      "flag": "YELLOW"
+    },
+    {
+      "date": "2026-01-09",
+      "return": 0.0066,
+      "flag": "GREEN"
+    }
+  ]
+}
