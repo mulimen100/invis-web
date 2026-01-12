@@ -7,6 +7,24 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 export default function ArenaPage() {
     const [timeLeft, setTimeLeft] = useState<string>("");
     const [chartData, setChartData] = useState<any[]>([]);
+    const [engineState, setEngineState] = useState<any>(null);
+
+    // Fetch Engine State
+    useEffect(() => {
+        const fetchState = async () => {
+            try {
+                const res = await fetch('/api/engine/state');
+                const data = await res.json();
+                setEngineState(data);
+            } catch (e) {
+                console.error("Failed to fetch engine state", e);
+            }
+        };
+
+        fetchState();
+        const interval = setInterval(fetchState, 5000); // Poll every 5s
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         fetch('/data/backtest_results.json')
@@ -27,16 +45,6 @@ export default function ArenaPage() {
             })
             .catch(err => console.error("Failed to load chart data", err));
     }, []);
-
-    // Log Data Mock
-    const logs = [
-        { time: "13:16:51", level: "INFO", message: "Initializing neural weights..." },
-        { time: "13:16:51", level: "SUCCESS", message: "Connected to market data stream." },
-        { time: "13:16:51", level: "INFO", message: "Calculating regime volatility..." },
-        { time: "13:16:51", level: "ANALYSIS", message: "Regime detected: RISK_ON_FULL", highlight: "text-purple-400" },
-        { time: "13:16:51", level: "INFO", message: "Rebalancing portfolio..." },
-        { time: "13:16:51", level: "READY", message: "Waiting for next tick.", highlight: "text-green-400 animate-pulse" }
-    ];
 
     useEffect(() => {
         // Timer Logic
@@ -101,7 +109,7 @@ export default function ArenaPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* SPY Bot Card */}
                 <div className="rounded-3xl border border-white/10 bg-white/5 p-8 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-32 bg-blue-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-600/20 transition-all duration-500" />
+                    <div className={`absolute top-0 right-0 p-32 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-all duration-500 ${engineState?.state === 'ON' ? 'bg-green-600/10 group-hover:bg-green-600/20' : 'bg-red-600/10 group-hover:bg-red-600/20'}`} />
 
                     <div className="flex justify-between items-start mb-8 relative">
                         <div>
@@ -109,49 +117,66 @@ export default function ArenaPage() {
                             <span className="text-blue-400 text-sm tracking-wider font-mono">TITAN HAMMER</span>
                         </div>
                         <div className="text-right">
-                            <div className="text-2xl font-mono font-bold text-white">₪100,000</div>
-                            <div className="text-gray-400 text-sm">0.00%</div>
+                            <div className="text-2xl font-mono font-bold text-white">
+                                {engineState ? `₪${engineState.equity.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : 'LOADING...'}
+                            </div>
+                            <div className="text-gray-400 text-sm">
+                                ATH: ₪{(engineState?.ath || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                            </div>
                         </div>
                     </div>
 
                     <div className="space-y-4 relative">
                         <div className="flex justify-between text-sm border-b border-white/5 pb-2">
                             <span className="text-gray-500">Status</span>
-                            <span className="text-green-400 font-mono">ACTIVE (3X)</span>
+                            <span className={`font-mono ${engineState?.state === 'ON' ? 'text-green-400' : 'text-red-400'}`}>
+                                {engineState?.state || 'CONNECTING...'}
+                            </span>
                         </div>
                         <div className="flex justify-between text-sm border-b border-white/5 pb-2">
-                            <span className="text-gray-500">Today</span>
-                            <span className="text-white font-mono">0.00%</span>
+                            <span className="text-gray-500">Drawdown</span>
+                            <span className={`${(engineState?.drawdown || 0) < -0.1 ? 'text-red-400' : 'text-white'} font-mono`}>
+                                {(engineState?.drawdown * 100 || 0).toFixed(2)}%
+                            </span>
                         </div>
                         <div className="flex justify-between text-sm pb-2">
-                            <span className="text-gray-500">Drawdown</span>
-                            <span className="text-white font-mono">0.00%</span>
+                            <span className="text-gray-500">Wait / Trend</span>
+                            <span className="text-white font-mono">
+                                {engineState?.counters?.days_paused || 0}d / {engineState?.counters?.trend_days || 0}d
+                            </span>
                         </div>
                     </div>
                 </div>
 
-                {/* Engine Output Log */}
                 <div className="lg:col-span-2 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-md p-8 relative overflow-hidden flex flex-col">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                            <span className={`w-2 h-2 rounded-full animate-pulse ${engineState?.state === 'ON' ? 'bg-green-500' : 'bg-red-500'}`}></span>
                             ENGINE OUTPUT LOG
                         </h2>
-                        <span className="text-xs font-mono text-gray-500">T-MINUS 1 SECOND LATENCY</span>
+                        <span className="text-xs font-mono text-gray-500">LIVE FEED</span>
                     </div>
 
                     <div className="flex-1 font-mono text-xs md:text-sm space-y-3 overflow-y-auto max-h-[250px] custom-scrollbar pr-2">
-                        {logs.map((log, idx) => (
-                            <div key={idx} className="flex gap-4 border-l-2 border-white/5 pl-4 hover:border-blue-500/50 transition-colors group">
-                                <span className="text-gray-500">[{log.time}]</span>
-                                <span className={`font-bold w-20 text-right ${log.level === 'INFO' ? 'text-blue-400' :
-                                    log.level === 'SUCCESS' ? 'text-green-400' :
-                                        log.level === 'ANALYSIS' ? 'text-purple-400' :
-                                            log.level === 'READY' ? 'text-green-300' : 'text-gray-300'
-                                    }`}>{log.level}</span>
-                                <span className={`text-gray-300 ${log.highlight || ''}`}>{log.message}</span>
-                            </div>
-                        ))}
+                        {/* Display Engine Note as Main Log for now */}
+                        <div className="flex gap-4 border-l-2 border-white/5 pl-4 hover:border-blue-500/50 transition-colors group">
+                            <span className="text-gray-500">[{engineState?.date || '---'}]</span>
+                            <span className={`font-bold w-20 text-right ${engineState?.event === 'PAUSE_TRIGGERED' ? 'text-red-400' :
+                                engineState?.event === 'RESUME_TRIGGERED' ? 'text-green-400' : 'text-blue-400'
+                                }`}>{engineState?.event || 'INFO'}</span>
+                            <span className="text-gray-300">{engineState?.notes || 'No recent activity.'}</span>
+                        </div>
+
+                        {/* Status Details */}
+                        <div className="flex gap-4 border-l-2 border-white/5 pl-4">
+                            <span className="text-gray-500">[STATUS]</span>
+                            <span className="font-bold w-20 text-right text-purple-400">STATE</span>
+                            <span className="text-gray-300">
+                                Current State: {engineState?.state} |
+                                Paused: {engineState?.counters?.days_paused || 0}d |
+                                Trend: {engineState?.counters?.trend_days || 0}d
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
