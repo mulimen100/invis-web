@@ -13,7 +13,8 @@ export default function ArenaPage() {
     useEffect(() => {
         const fetchState = async () => {
             try {
-                const res = await fetch('/api/engine/state');
+                // Fetch static file directly (works on Vercel)
+                const res = await fetch('/data/engine_state.json');
                 const data = await res.json();
                 setEngineState(data);
             } catch (e) {
