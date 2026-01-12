@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
     LineChart,
     Line,
@@ -99,6 +99,19 @@ export default function BacktestPage() {
         }
     }
 
+
+    // Optimize: Downsample chart data for performance
+    const chartData = useMemo(() => {
+        if (!data || !data.history) return [];
+        const history = data.history;
+        const MAX_POINTS = 500;
+
+        if (history.length <= MAX_POINTS) return history;
+
+        const step = Math.ceil(history.length / MAX_POINTS);
+        return history.filter((_: any, index: number) => index % step === 0 || index === history.length - 1);
+    }, [data]);
+
     return (
         <div className="min-h-screen bg-[#020617] text-gray-100 p-8 font-sans">
             <div className="max-w-7xl mx-auto space-y-12">
@@ -129,7 +142,7 @@ export default function BacktestPage() {
                     </h2>
                     <div className="h-[500px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={data.history} margin={{ top: 10, right: 30, left: 20, bottom: 10 }}>
+                            <LineChart data={chartData} margin={{ top: 10, right: 30, left: 20, bottom: 10 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                                 <XAxis
                                     dataKey="date"
@@ -147,7 +160,7 @@ export default function BacktestPage() {
                                     contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px' }}
                                     itemStyle={{ fontSize: '12px' }}
                                     labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
-                                    formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
+                                    formatter={(value: any) => [`$${value?.toLocaleString()}`, '']}
                                 />
                                 <Legend iconType="circle" />
 

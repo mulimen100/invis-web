@@ -12,12 +12,18 @@ export default function ArenaPage() {
         fetch('/data/backtest_results.json')
             .then(res => res.json())
             .then(data => {
-                // Optimize: Limit points if too heavy? For now, full history is requested.
-                // Or maybe slice last 5 years? User said "over time... years following".
-                // Full history might be heavy for Recharts Canvas but let's try.
-                // Decimation might be needed later.
-                // We keep only necessary fields to save memory if possible?
-                setChartData(data.history);
+                // Optimize: Limit points for performance (Max 500)
+                let processedHistory = data.history || [];
+                const MAX_POINTS = 500;
+
+                if (processedHistory.length > MAX_POINTS) {
+                    const step = Math.ceil(processedHistory.length / MAX_POINTS);
+                    processedHistory = processedHistory.filter((_: any, index: number) =>
+                        index % step === 0 || index === processedHistory.length - 1
+                    );
+                }
+
+                setChartData(processedHistory);
             })
             .catch(err => console.error("Failed to load chart data", err));
     }, []);
