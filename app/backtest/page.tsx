@@ -64,6 +64,26 @@ export default function BacktestPage() {
             .catch((err) => console.error('Failed to load backtest data', err));
     }, []);
 
+    // Optimize: Downsample chart data for performance
+    const chartData = useMemo(() => {
+        if (!data || !Array.isArray(data.history)) return [];
+
+        try {
+            const history = data.history;
+            const MAX_POINTS = 500;
+
+            if (history.length <= MAX_POINTS) return history;
+
+            // Ensure step is at least 1 to avoid infinite loops or NaN
+            const step = Math.max(1, Math.ceil(history.length / MAX_POINTS));
+
+            return history.filter((_: any, index: number) => index % step === 0 || index === history.length - 1);
+        } catch (error) {
+            console.error("Error optimizing chart data:", error);
+            return data?.history || [];
+        }
+    }, [data]);
+
     if (!data) {
         return (
             <div className="min-h-screen bg-[#020617] flex items-center justify-center text-white">
@@ -76,6 +96,7 @@ export default function BacktestPage() {
     const yearlyData = [];
     if (data.history.length > 0) {
         let currentYear = new Date(data.history[0].date).getFullYear();
+
         let startEquitySpy = data.metadata.initial_investment;
         let startEquityTitan = data.metadata.initial_investment;
 
@@ -99,18 +120,6 @@ export default function BacktestPage() {
         }
     }
 
-
-    // Optimize: Downsample chart data for performance
-    const chartData = useMemo(() => {
-        if (!data || !data.history) return [];
-        const history = data.history;
-        const MAX_POINTS = 500;
-
-        if (history.length <= MAX_POINTS) return history;
-
-        const step = Math.ceil(history.length / MAX_POINTS);
-        return history.filter((_: any, index: number) => index % step === 0 || index === history.length - 1);
-    }, [data]);
 
     return (
         <div className="min-h-screen bg-[#020617] text-gray-100 p-8 font-sans">
