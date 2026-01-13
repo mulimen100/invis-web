@@ -2,49 +2,45 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const fileType = searchParams.get('file'); // 'state' or 'history'
+    const file = searchParams.get('file'); // supports: state | history | engine_state.json
 
-    // Default to a placeholder if Env Var is missing (safe failover)
-    // The user MUST set this in Railway.
-    // Format: https://raw.githubusercontent.com/USER/REPO/BRANCH
     const BASE_URL = process.env.BACKEND_REPO_RAW_URL;
 
     if (!BASE_URL) {
-        return NextResponse.json({
-            error: "Configuration Error: BACKEND_REPO_RAW_URL not set in environment variables."
-        }, { status: 500 });
+        return NextResponse.json(
+            { error: 'Configuration Error: BACKEND_REPO_RAW_URL not set' },
+            { status: 500 }
+        );
     }
 
-    let targetUrl = "";
+    let targetUrl: string | null = null;
 
-    if (fileType === 'state') {
-        targetUrl = `${BASE_URL}/state/engine_state.json`;
-    } else if (fileType === 'history') {
-        // NOTE: This assumes backtest_results.json is synced to 'data/' folder in backend repo.
-        // If not, this might fail until backend v11 is deployed.
-        targetUrl = `${BASE_URL}/data/backtest_results.json`;
+    // 🔧 ACCEPT BOTH OLD + NEW CALL STYLES
+    if (file === 'state' || file === 'engine_state.json') {
+        targetUrl = `${BASE_URL}/engine_state.json`;
+    } else if (file === 'history' || file === 'backtest_results.json') {
+        targetUrl = `${BASE_URL}/backtest_results.json`;
     } else {
-        return NextResponse.json({ error: "Invalid file type requested" }, { status: 400 });
+        return NextResponse.json(
+            { error: 'Invalid file type requested' },
+            { status: 400 }
+        );
     }
 
-    // Add Cache Busting to the Upstream Request
-    const upstreamUrl = `${targetUrl}?t=${new Date().getTime()}`;
+    const upstreamUrl = `${targetUrl}?t=${Date.now()}`;
 
     try {
-        console.log(`[Proxy] Fetching: ${upstreamUrl}`);
         const res = await fetch(upstreamUrl, { cache: 'no-store' });
 
         if (!res.ok) {
-            console.error(`[Proxy] Failed to fetch ${upstreamUrl}: ${res.status}`);
-            return NextResponse.json({
-                error: `Failed to fetch data from backend storage (${res.status})`,
-                details: "Check BACKEND_REPO_RAW_URL and ensure files exist in the repo."
-            }, { status: res.status });
+            return NextResponse.json(
+                { error: `Failed to fetch backend file (${res.status})` },
+                { status: res.status }
+            );
         }
 
         const data = await res.json();
 
-        // Return with cache-control headers to prevent Vercel/Railway edge caching
         return NextResponse.json(data, {
             headers: {
                 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
@@ -53,8 +49,10 @@ export async function GET(request: Request) {
             }
         });
 
-    } catch (error) {
-        console.error("[Proxy] Exception:", error);
-        return NextResponse.json({ error: "Internal Server Error fetching data" }, { status: 500 });
+    } catch (err) {
+        return NextResponse.json(
+            { error: 'Internal Server Error fetching data' },
+            { status: 500 }
+        );
     }
 }
