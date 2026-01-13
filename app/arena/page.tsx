@@ -14,7 +14,7 @@ export default function ArenaPage() {
         const fetchState = async () => {
             try {
                 // Fetch static file directly (works on Vercel)
-                const res = await fetch('/data/engine_state.json');
+                const res = await fetch(`/data/engine_state.json?t=${new Date().getTime()}`);
                 const data = await res.json();
                 setEngineState(data);
             } catch (e) {
@@ -28,7 +28,7 @@ export default function ArenaPage() {
     }, []);
 
     useEffect(() => {
-        fetch('/data/backtest_results.json')
+        fetch(`/data/backtest_results.json?t=${new Date().getTime()}`)
             .then(res => res.json())
             .then(data => {
                 // Optimize: Limit points for performance (Max 500)
