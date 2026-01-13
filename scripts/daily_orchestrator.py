@@ -58,6 +58,14 @@ def run_engine():
     # 3. Check for Changes
     new_state = load_state()
     
+    # 4. Update Daily Performance Log (Paper Trading Simulation)
+    perf_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'update_daily_performance.py')
+    try:
+        logger.info("Updating Daily Performance Log...")
+        subprocess.run([sys.executable, perf_script], check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Performance Update Failed:\n{e.stderr}")
+    
     # 4. Update Market Flags (Independent of Engine State)
     flags_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'update_flags.py')
     try:
@@ -84,21 +92,9 @@ def run_engine():
     else:
         logger.warning(f"Web Data Dir not found at {WEB_DATA_DIR}, skipping copy.")
 
-    # 6. Update Daily Performance Log (Paper Trading Simulation)
-    perf_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'update_daily_performance.py')
-    try:
-        logger.info("Updating Daily Performance Log...")
-        subprocess.run([sys.executable, perf_script], check=True, capture_output=True, text=True)
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Performance Update Failed:\n{e.stderr}")
+
     
-    # 6. Update Daily Performance Log (Paper Trading Simulation)
-    perf_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'update_daily_performance.py')
-    try:
-        logger.info("Updating Daily Performance Log...")
-        subprocess.run([sys.executable, perf_script], check=True, capture_output=True, text=True)
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Performance Update Failed:\n{e.stderr}")
+
     
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     sync_msg = f"Titan Engine Update: {timestamp} | State: {new_state.get('state', 'UNKNOWN')}"
