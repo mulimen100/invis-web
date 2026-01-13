@@ -1,5 +1,5 @@
 {
-    "date": "2026-01-12",
+    "date": "2026-01-13",
     "state": "ON",
     "equity": 100000.0,
     "ath": 100000.0,
@@ -9,6 +9,6 @@
         "days_paused": 0,
         "trend_days": 0
     },
-    "event": "RESET",
-    "notes": "State manually reset to 100k initial capital."
+    "event": "NO_CHANGE",
+    "notes": "Routine check."
 }
