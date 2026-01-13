@@ -1,5 +1,0 @@
-2026-01-13 11:06:11,874 - INFO - Advisor Engine: Cycle Started
-2026-01-13 11:06:11,875 - INFO - Input Equity: $100,000.00
-2026-01-13 11:06:12,281 - INFO - SPY: 695.16 | SMA200: 627.99 | Uptrend: True
-2026-01-13 11:06:12,281 - INFO - State: ON | DD: 0.00% | Limit: -25%
-2026-01-13 11:06:12,282 - INFO - Advisor Run Complete. Final State: ON
