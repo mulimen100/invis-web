@@ -58,8 +58,11 @@ export default function BacktestPage() {
     const [data, setData] = useState<BacktestData | null>(null);
 
     useEffect(() => {
-        fetch('/data/backtest_results.json')
-            .then((res) => res.json())
+        fetch('/api/engine-data?file=history')
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to fetch backtest history");
+                return res.json();
+            })
             .then((d) => setData(d))
             .catch((err) => console.error('Failed to load backtest data', err));
     }, []);

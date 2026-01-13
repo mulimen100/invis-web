@@ -13,8 +13,9 @@ export default function ArenaPage() {
     useEffect(() => {
         const fetchState = async () => {
             try {
-                // Fetch static file directly (works on Vercel)
-                const res = await fetch(`/data/engine_state.json?t=${new Date().getTime()}`);
+                // Fetch from Proxy (Live VM Data)
+                const res = await fetch('/api/engine-data?file=state');
+                if (!res.ok) throw new Error("Failed to fetch state");
                 const data = await res.json();
                 setEngineState(data);
             } catch (e) {
@@ -28,7 +29,7 @@ export default function ArenaPage() {
     }, []);
 
     useEffect(() => {
-        fetch(`/data/backtest_results.json?t=${new Date().getTime()}`)
+        fetch('/api/engine-data?file=history') // Fetch History from Proxy
             .then(res => res.json())
             .then(data => {
                 // Optimize: Limit points for performance (Max 500)
