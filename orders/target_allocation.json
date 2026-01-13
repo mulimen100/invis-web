@@ -1,0 +1,9 @@
+{
+    "timestamp": "2026-01-13T08:37:52.008666",
+    "source": "ExecutionEngine",
+    "advisor_state": "ON",
+    "allocations": {
+        "UPRO": 1.0
+    },
+    "mode": "LIVE"
+}

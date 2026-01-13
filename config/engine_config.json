@@ -1,0 +1,15 @@
+{
+    "notifications": {
+        "enabled": true,
+        "email_receiver": "mulimen@gmail.com",
+        "email_sender": "mulimen@gmail.com",
+        "email_password": "jrvq ppyn tlzi nscb"
+    },
+    "assets": {
+        "UPRO": 1.0
+    },
+    "manual_override": {
+        "paused": true,
+        "exit_to": "SPY"
+    }
+}

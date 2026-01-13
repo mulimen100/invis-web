@@ -1,0 +1,13 @@
+{
+    "date": "2026-01-11",
+    "state": "ON",
+    "ath": 100000.0,
+    "drawdown": 0.0,
+    "pause_start_date": null,
+    "counters": {
+        "days_paused": 0,
+        "trend_days": 0
+    },
+    "event": "NO_CHANGE",
+    "notes": "Routine check."
+}

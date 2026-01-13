@@ -1,0 +1,11 @@
+{
+    "scenario": "Scenario B",
+    "period": "1995-01-03 to 2026-01-09",
+    "initial_capital": 10000.0,
+    "final_equity": 9556470.87,
+    "cagr": 0.2476,
+    "max_drawdown": -0.3373,
+    "trades": 36,
+    "pause_events": 18,
+    "resume_events": 18
+}

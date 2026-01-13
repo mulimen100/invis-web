@@ -1,0 +1,14 @@
+{
+    "timestamp": "2026-01-10T21:20:29.392524",
+    "allocations": {
+        "SPY": 0.0,
+        "UPRO": 0.0
+    },
+    "logic": "PAUSED",
+    "metrics": {
+        "equity": 8400.0,
+        "drawdown": -0.30000000000000004,
+        "wait_counter": 0,
+        "trend_counter": 0
+    }
+}
